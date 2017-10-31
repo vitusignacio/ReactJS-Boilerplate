@@ -1,9 +1,27 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { BrowserRouter as Router,
+  Route,
+  Link } from 'react-router-dom';
 
-import { Main } from "./components/main/Main";
+import { Main } from './components/main/Main';
+import { About } from './components/about/About';
+
+require('./base.sass');
 
 ReactDOM.render(
-    <Main />,
+    (
+    	<Router>
+    	  <div>
+	    	  <ul>
+		        <li><Link to="/">Home</Link></li>
+		        <li><Link to="/about">About</Link></li>
+		      </ul>
+
+		      <Route exact path="/" component={Main}/>
+		      <Route path="/about" component={About}/>
+		  </div>
+	    </Router>
+    ),
     document.getElementById("root")
 );
