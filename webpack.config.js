@@ -1,8 +1,8 @@
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var CleanWebpackPlugin = require('clean-webpack-plugin');
 var path = require('path');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 let pathsToClean = [
+    'public',
     'dist',
     'build'
 ];
@@ -12,8 +12,8 @@ let cleanOptions = { }
 module.exports = {
     entry: './src/base.tsx',
     output: {
-        filename: 'scripts/bundle.js',
-        path: __dirname + '/dist'
+        filename: 'bundle.js',
+        path: __dirname + '/public'
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -30,7 +30,22 @@ module.exports = {
             { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
+            // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+
+            // All images processors
+            { test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/, loader: "file-loader?name=assets/[name].[ext]" },
+
+            // All html files
+            {
+                test: /\.html$/,
+                loader: 'html-loader'
+            },
+
+            // All sass files
+            {
+                test: /\.sass$/,
+                loader: ['style-loader','css-loader','resolve-url-loader','sass-loader?sourceMap']
+            },
         ]
     },
 
@@ -44,13 +59,6 @@ module.exports = {
     },
 
     plugins: [
-        new CleanWebpackPlugin(pathsToClean, cleanOptions),
-        new CopyWebpackPlugin([
-            { from: 'node_modules/react/umd/react.production.min.js', to: 'scripts/react.production.min.js' },
-            { from: 'node_modules/react-dom/umd/react-dom.production.min.js', to: 'scripts/react-dom.production.min.js' },
-            { from: 'index.html', to: 'index.html' },
-            { from: 'res/main.css', to: 'res/main.css' },
-            { from: 'res/background.png', to: 'res/background.png' }
-        ])
+        // new CleanWebpackPlugin(pathsToClean, cleanOptions)
     ]
 };

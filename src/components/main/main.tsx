@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/** Styles */
+require('./main.sass');
+
 export interface MainProps { }
 
 export interface MainStates { }
