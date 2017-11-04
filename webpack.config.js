@@ -1,5 +1,7 @@
 var path = require('path');
+var webpack = require('webpack');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+var CompressionPlugin = require('compression-webpack-plugin');
 
 let pathsToClean = [
     'public',
@@ -44,7 +46,7 @@ module.exports = {
             // All sass files
             {
                 test: /\.sass$/,
-                loader: ['style-loader','css-loader','resolve-url-loader','sass-loader?sourceMap']
+                loader: ['style-loader','css-loader','postcss-loader?sourceMap','resolve-url-loader','sass-loader?sourceMap']
             },
         ]
     },
@@ -60,5 +62,21 @@ module.exports = {
 
     plugins: [
         // new CleanWebpackPlugin(pathsToClean, cleanOptions)
+        new webpack.DefinePlugin({
+          'process.env': {
+            'NODE_ENV': JSON.stringify('production')
+          }
+        }),
+        // optimize resources, incl. html, css and js
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin(),
+        new webpack.optimize.AggressiveMergingPlugin(),
+        new CompressionPlugin({
+          asset: "[path].gz[query]",
+          algorithm: "gzip",
+          test: /\.js$|\.css$|\.html$/,
+          threshold: 10240,
+          minRatio: 0.8
+        })
     ]
 };
