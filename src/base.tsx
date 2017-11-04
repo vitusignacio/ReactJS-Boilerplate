@@ -6,6 +6,8 @@ import {
   	Link 
 	} from 'react-router-dom';
 
+import { BaseHelper } from './helpers/base.helper';
+
 import { Main } from './components/main/Main';
 import { About } from './components/about/About';
 
