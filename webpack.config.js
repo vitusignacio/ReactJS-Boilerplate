@@ -2,22 +2,20 @@ var path = require('path');
 var webpack = require('webpack');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 let pathsToClean = [
-    'public'
+    'dist'
 ];
 
 let cleanOptions = { }
 
 module.exports = env => {
-
-    console.log(env.NODE_ENV);
-
     let webPackConfigs = {
         entry: './src/base.tsx',
         output: {
             filename: 'bundle.js',
-            path: __dirname + '/public'
+            path: __dirname + '/dist'
         },
 
         // Enable sourcemaps for debugging webpack's output.
@@ -42,7 +40,7 @@ module.exports = env => {
                 // All html files
                 {
                     test: /\.html$/,
-                    loader: 'html-loader'
+                    loader: ['html-loader']
                 },
 
                 // All sass files
@@ -62,13 +60,40 @@ module.exports = env => {
             'react-dom': 'ReactDOM'
         },
 
-        plugins: [new CleanWebpackPlugin(pathsToClean, cleanOptions)]
+        plugins: [
+            new CleanWebpackPlugin(pathsToClean, cleanOptions),
+            new CopyWebpackPlugin(
+            [
+                { from: 'node_modules/react', to: 'node_modules/react' },
+                { from: 'node_modules/react-dom', to: 'node_modules/react-dom' },
+            ],
+            {
+                ignore: [
+                    '*.js.map',
+                    '*.json',
+                    '*.map',
+                    '*.md',
+                    '*.sass',
+                    '*.scss',
+                    '*.tsx',
+                    'LICENSE',
+                ]
+            }),
+            new CopyWebpackPlugin(
+            [
+                { context: './views', from: '**/*.html', to: './', force: true }
+            ],
+            {
+                ignore: [
+                ]
+            })
+        ]
     }
 
-    if (env.NODE_ENV == 'local') 
+    if (env.NODE_ENV == 'local')
     {
         // TODO: Add more plugins for development environment
-    } 
+    }
     else if (env.NODE_ENV == 'production')
     {
         /* new webpack.DefinePlugin({
@@ -89,7 +114,7 @@ module.exports = env => {
               threshold: 10240,
               minRatio: 0.8
             })
-        ); 
+        );
     }
 
     return webPackConfigs;
